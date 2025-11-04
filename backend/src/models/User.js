@@ -21,6 +21,16 @@ const UserSchema = new mongoose.Schema({
 
   animesRated: [
     {
+      name: {
+        // name of the anime
+        type: String,
+        require: true,
+      },
+      slug: {
+        // slug of the anime
+        type: String,
+        require: true,
+      },
       animeID: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Anime", // reference to Anime model

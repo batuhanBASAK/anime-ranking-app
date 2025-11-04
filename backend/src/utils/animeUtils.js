@@ -218,6 +218,8 @@ async function rateAnime(slug, userId, rating) {
 
     // --- Update User data ---
     user.animesRated.push({
+      name: anime.name,
+      slug: anime.slug,
       animeID: anime._id,
       rating,
     });

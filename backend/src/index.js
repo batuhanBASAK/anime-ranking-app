@@ -9,6 +9,7 @@ const app = express();
 
 const authRouter = require("./routes/auth");
 const apiRouter = require("./routes/api");
+const userRouter = require("./routes/user");
 
 // Connect to the database
 mongoose
@@ -28,6 +29,7 @@ app.use(limiter);
 
 app.use("/auth", authRouter);
 app.use("/api", apiRouter);
+app.use("/user", userRouter);
 
 app.listen(process.env.PORT, () =>
   console.log(`The server is up and running on port ${process.env.PORT}`)
