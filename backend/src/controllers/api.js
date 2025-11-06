@@ -1,5 +1,11 @@
 // controllers/api.js
-const { getPaginatedAnimes, getAnimeBySlug } = require("../utils/animeUtils");
+const {
+  getPaginatedAnimes,
+  getAnimeBySlug,
+  createAnime,
+} = require("../utils/animeUtils");
+
+const Anime = require("../models/Anime");
 
 /**
  * Controller to fetch a paginated list of animes.
@@ -22,7 +28,9 @@ async function getAnimesController(req, res) {
       return res.status(404).json({ message: "No animes found" });
     }
 
-    return res.status(200).json({ animes });
+    const totalCount = await Anime.countDocuments();
+
+    return res.status(200).json({ animes, totalCount });
   } catch (error) {
     console.error("❌ Error in getAnimesController:", error.message);
     return res.status(500).json({ message: "Server error" });
@@ -56,7 +64,44 @@ async function getAnimeController(req, res) {
   }
 }
 
+async function postAnimeController(req, res) {
+  try {
+    const { name, slug, description } = req.body;
+
+    // --- Validate input ---
+    if (!name || !slug || !description) {
+      return res.status(400).json({
+        message: "Missing required fields (name, slug, description).",
+      });
+    }
+
+    // Check if slug already exists
+    const existing = await Anime.findOne({ slug: slug.toLowerCase().trim() });
+    if (existing) {
+      return res
+        .status(409)
+        .json({ message: `Anime with slug "${slug}" already exists.` });
+    }
+
+    // --- Create the anime ---
+    const newAnime = await createAnime(
+      name.trim(),
+      slug.toLowerCase().trim(),
+      description.trim()
+    );
+
+    return res.status(201).json({
+      message: `Anime "${name}" created successfully.`,
+      anime: newAnime,
+    });
+  } catch (error) {
+    console.error("❌ Error in postAnimeController:", error.message);
+    return res.status(500).json({ message: "Server error" });
+  }
+}
+
 module.exports = {
   getAnimesController,
   getAnimeController,
+  postAnimeController,
 };
