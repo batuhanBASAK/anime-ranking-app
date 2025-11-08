@@ -19,6 +19,8 @@ function AuthProvider({ children }) {
         setAccessToken(() => response.data.accessToken);
       } catch {
         setAccessToken(() => null);
+      } finally {
+        setLoading(() => false);
       }
     };
     setLoading(() => true);
@@ -117,7 +119,7 @@ function AuthProvider({ children }) {
         setAccessToken,
         user,
         setUser,
-        logout
+        logout,
       }}
     >
       {children}

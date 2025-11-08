@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 
 function AnimeCard({ anime }) {
   const navigate = useNavigate();
+
   const handleNavigation = (e) => {
     e.preventDefault();
 
@@ -17,7 +18,7 @@ function AnimeCard({ anime }) {
   };
 
   return (
-    <Card sx={{ height: "20rem" }}>
+    <Card sx={{ height: "20rem", backgroundColor: "background.paper" }}>
       <CardContent>
         {/* rank */}
         <Typography variant="h5" component="div">

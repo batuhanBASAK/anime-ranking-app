@@ -5,6 +5,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import User from "./pages/User"
 import AdminPanel from "./pages/AdminPanel"
+import AnimePage from "./pages/AnimePage"
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
 
       <Route element={<ProtectedRoutes allowedRoles={["null", "user", "admin"]} />} >
         <Route path="/" element={<Home />} />
+        <Route path="/anime/:slug" element={<AnimePage />} />
       </Route>
 
 

@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const express = require("express");
 const cookiParser = require("cookie-parser");
 const cors = require("cors");
-const limiter = require("./middlewares/rateLimiter");
 const app = express();
 
 const authRouter = require("./routes/auth");
@@ -25,7 +24,6 @@ app.use(
     credentials: true,
   })
 );
-app.use(limiter);
 
 app.use("/auth", authRouter);
 app.use("/api", apiRouter);

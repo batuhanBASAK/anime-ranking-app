@@ -141,7 +141,8 @@ async function refresh(req, res) {
     // Delete old refresh token from DB (one-time use policy)
     await RefreshToken.deleteOne({ token: oldToken });
 
-    const user = req.user; // populated by verifyRefreshToken middleware
+    const username = req.user.username;
+    const user = await User.findOne({ username });
 
     // Issue new tokens
     const accessToken = generateAccessToken(user);

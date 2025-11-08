@@ -10,7 +10,7 @@ const RefreshToken = require("../models/RefreshToken");
  */
 function generateAccessToken(user) {
   return jwt.sign(
-    { id: user._id, username: user.username, role: user.role },
+    { userId: user._id, username: user.username, role: user.role },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: process.env.ACCESS_TOKEN_EXP || "15m" }
   );
@@ -26,7 +26,7 @@ function generateAccessToken(user) {
 async function generateRefreshToken(user) {
   // Generate token string
   const refreshToken = jwt.sign(
-    { id: user._id, username: user.username, role: user.role },
+    { userId: user._id, username: user.username, role: user.role },
     process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: process.env.REFRESH_TOKEN_EXP }
   );

@@ -10,6 +10,10 @@ const theme = createTheme({
     secondary: {
       main: yellow[700],
     },
+    background: {
+      default: "#f5f5f5",
+      paper: "#ffffff",
+    },
   },
 });
 

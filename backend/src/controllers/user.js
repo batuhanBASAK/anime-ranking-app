@@ -17,9 +17,7 @@ async function getUserController(req, res) {
         .json({ message: "Unauthorized: No user found in token" });
     }
 
-    const user = await User.findOne({ username })
-      .select("-password -__v") // omit sensitive data
-      .populate("animesRated.animeID", "name slug overallRating ranking");
+    const user = await User.findOne({ username }).select("-password -__v");
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -39,7 +37,7 @@ async function getUserController(req, res) {
 async function postAnimeController(req, res) {
   try {
     const { slug, rating } = req.params;
-    const userId = req.user?.id || req.user?._id;
+    const userId = req.user?.userId;
 
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized: User ID missing" });
@@ -56,13 +54,6 @@ async function postAnimeController(req, res) {
 
     return res.status(200).json({
       message: `Successfully rated "${slug}" with ${numericRating}`,
-      anime: {
-        slug: updatedAnime.slug,
-        name: updatedAnime.name,
-        overallRating: updatedAnime.overallRating,
-        totalRatings: updatedAnime.totalRatings,
-        ranking: updatedAnime.ranking,
-      },
     });
   } catch (error) {
     console.error("❌ Error in postAnimeController:", error.message);
@@ -78,7 +69,7 @@ async function postAnimeController(req, res) {
 async function putAnimeController(req, res) {
   try {
     const { slug, rating } = req.params;
-    const userId = req.user?.id || req.user?._id;
+    const userId = req.user?.userId;
 
     if (!userId) {
       return res.status(401).json({ message: "User ID missing" });
@@ -95,13 +86,6 @@ async function putAnimeController(req, res) {
 
     return res.status(200).json({
       message: `Successfully updated rating for "${slug}" to ${numericRating}`,
-      anime: {
-        slug: updatedAnime.slug,
-        name: updatedAnime.name,
-        overallRating: updatedAnime.overallRating,
-        totalRatings: updatedAnime.totalRatings,
-        ranking: updatedAnime.ranking,
-      },
     });
   } catch (error) {
     console.error("❌ Error in putAnimeController:", error.message);
