@@ -1,5 +1,6 @@
 const Anime = require("../models/Anime");
 const User = require("../models/User");
+const { saveLog } = require("../utils/logUtils");
 
 /**
  * Creates a new anime entry and saves it to the database.
@@ -164,6 +165,8 @@ async function deleteAnimeBySlug(slug) {
     console.log(
       `🗑️ Anime "${deletedAnime.name}" (slug: ${slug}) deleted successfully.`
     );
+
+    await updateAnimeRanks();
     return deletedAnime;
   } catch (error) {
     console.error("❌ Error deleting anime:", error.message);
@@ -225,7 +228,11 @@ async function rateAnime(slug, userId, rating) {
     });
 
     await user.save();
-
+    await updateAnimeRanks();
+    await saveLog(
+      "user post anime",
+      `user ${user.username} has been rated anime ${anime.name}`
+    );
     return anime;
   } catch (error) {
     console.error("❌ Error rating anime:", error.message);
@@ -313,7 +320,12 @@ async function updateAnimeRating(slug, userId, newRating) {
     // --- Update User document ---
     ratedAnime.rating = newRating;
     await user.save();
+    await updateAnimeRanks();
 
+    await saveLog(
+      "user put anime",
+      `user ${user.username} has been updated the rate of the anime ${anime.name}`
+    );
     return anime;
   } catch (error) {
     console.error("❌ Error updating anime rating:", error.message);

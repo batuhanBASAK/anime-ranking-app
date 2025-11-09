@@ -8,6 +8,8 @@ const {
   generateRefreshToken,
 } = require("../utils/tokenUtils");
 
+const { saveLog } = require("../utils/logUtils");
+
 /**
  * Register new user
  */
@@ -42,6 +44,10 @@ async function register(req, res) {
       maxAge: Number(process.env.REFRESH_TOKEN_EXP_IN_MS),
     });
 
+    await saveLog(
+      "register",
+      `new user with username ${newUser.username} has been registered`
+    );
     return res.status(200).json({
       message: "User registered successfully",
       accessToken,
@@ -90,6 +96,10 @@ async function login(req, res) {
       maxAge: Number(process.env.REFRESH_TOKEN_EXP_IN_MS),
     });
 
+    await saveLog(
+      "login",
+      `user with username ${user.username} has been logged in`
+    );
     return res.status(200).json({
       message: "Login successful",
       accessToken,
@@ -117,11 +127,16 @@ async function logout(req, res) {
 
     await RefreshToken.deleteOne({ token });
 
+    const username = req.user.username;
+
     res.clearCookie("refreshToken", {
       httpOnly: true,
       sameSite: "strict",
     });
-
+    await saveLog(
+      "logout",
+      `user with username ${username} has been logged out`
+    );
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     return res.status(500).json({ message: "Server error" });

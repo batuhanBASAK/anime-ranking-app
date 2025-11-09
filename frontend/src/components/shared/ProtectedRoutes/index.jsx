@@ -1,16 +1,13 @@
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, Navigate } from "react-router";
 import { useAuth } from "../AuthProvider/useAuth";
 
 function ProtectedRoutes({ allowedRoles }) {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const userRole = user ? user.role : "null";
+  const isAllowed = allowedRoles.includes(userRole);
 
-  if (!allowedRoles.includes(userRole)) {
-    navigate("/", { replace: true });
-  }
 
-  return <Outlet />;
+  return isAllowed ? <Outlet /> : <Navigate to="/" replace={true} />;
 }
 
 export default ProtectedRoutes;

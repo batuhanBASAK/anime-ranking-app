@@ -19,11 +19,8 @@ function AuthProvider({ children }) {
         setAccessToken(() => response.data.accessToken);
       } catch {
         setAccessToken(() => null);
-      } finally {
-        setLoading(() => false);
       }
     };
-    setLoading(() => true);
     refreshOnMount();
   }, []);
 
@@ -69,10 +66,12 @@ function AuthProvider({ children }) {
     };
   }, [accessToken]);
 
+
   useEffect(() => {
     const fetchUser = async () => {
       if (!accessToken) {
         setUser(() => null);
+        setLoading(() => false);
         return;
       }
 
@@ -87,24 +86,21 @@ function AuthProvider({ children }) {
         setLoading(() => false);
       }
     };
-
     fetchUser();
   }, [accessToken]);
 
 
-
   const logout = async () => {
-    setLoading(() => true);
     try {
       await api.post("/auth/logout");
       setAccessToken(() => null);
       setUser(() => null);
     } catch (err) {
       alert(err.message);
-    } finally {
-      setLoading(() => false);
     }
   }
+
+
 
   if (loading) {
     return (

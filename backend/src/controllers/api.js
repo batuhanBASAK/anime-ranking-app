@@ -5,6 +5,8 @@ const {
   createAnime,
 } = require("../utils/animeUtils");
 
+const { saveLog } = require("../utils/logUtils");
+
 const Anime = require("../models/Anime");
 
 /**
@@ -32,7 +34,6 @@ async function getAnimesController(req, res) {
 
     return res.status(200).json({ animes, totalCount });
   } catch (error) {
-    console.error("❌ Error in getAnimesController:", error.message);
     return res.status(500).json({ message: "Server error" });
   }
 }
@@ -59,7 +60,6 @@ async function getAnimeController(req, res) {
 
     return res.status(200).json({ anime });
   } catch (error) {
-    console.error("❌ Error in getAnimeController:", error.message);
     return res.status(500).json({ message: "Server error" });
   }
 }
@@ -95,7 +95,6 @@ async function postAnimeController(req, res) {
       anime: newAnime,
     });
   } catch (error) {
-    console.error("❌ Error in postAnimeController:", error.message);
     return res.status(500).json({ message: "Server error" });
   }
 }

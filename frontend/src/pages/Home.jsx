@@ -1,6 +1,6 @@
 import { Box, Container, Pagination, Typography } from '@mui/material'
 import { useAuth } from "../components/shared/AuthProvider/useAuth";
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from "../api/api";
 import RankingList from '../components/pages/Home/RankingList';
 import NonUserNavbar from "../components/shared/NonUserNavbar";
@@ -12,48 +12,36 @@ function Home() {
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
 
-  // Number of animes displayed in a page.
-  const animeCountInPage = 12;
+  // ✅ Show 15 animes per page
+  const animeCountInPage = 15;
 
-
-
-
-  const handlePageChange = async (event, value) => {
+  const fetchAnimes = async (pageNumber) => {
     try {
-      const startIndex = page * animeCountInPage;
+      const startIndex = (pageNumber - 1) * animeCountInPage;
       const res = await api.get(`/api/animes/${startIndex}/${animeCountInPage}`);
-      setAnimeList(() => res.data.animes);
-      setTotalCount(() => res.data.totalCount);
-      setPage(() => value);
+      setAnimeList(res.data.animes);
+      setTotalCount(res.data.totalCount);
     } catch {
-      setAnimeList(() => ([]));
+      setAnimeList([]);
+      setTotalCount(0);
     }
   };
 
+  const handlePageChange = (event, value) => {
+    setPage(value);
+    fetchAnimes(value);
+  };
 
-
-  useLayoutEffect(() => {
-    const fetchAnimes = async () => {
-      try {
-        const startIndex = 0;
-        // const res = await api.get(`/api/animes/${startIndex}/${animeCountInPage}`);
-        const res = await api.get(`/api/animes/${startIndex}/${100}`);
-        setAnimeList(() => res.data.animes);
-        setTotalCount(() => res.data.totalCount);
-      } catch {
-        setAnimeList(() => ([]));
-        setTotalCount(() => 0);
-      }
-    };
-
-    fetchAnimes();
+  // ✅ Fetch first page on mount
+  useEffect(() => {
+    fetchAnimes(1);
   }, []);
 
+  const pageCount = Math.ceil(totalCount / animeCountInPage);
 
   return (
     <Box>
-
-      {user ? (<UserNavbar />) : (<NonUserNavbar />)}
+      {user ? <UserNavbar /> : <NonUserNavbar />}
 
       <Container>
         <Typography
@@ -63,15 +51,23 @@ function Home() {
         >
           Ranking
         </Typography>
+
         <RankingList animeList={animeList} />
 
-        {totalCount > animeCountInPage && (
-          <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
-            <Pagination count={totalCount / animeCountInPage} page={page} onChange={handlePageChange} variant="outlined" shape="rounded" />
-          </Box>)}
+        {pageCount > 1 && (
+          <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+            <Pagination
+              count={pageCount}
+              page={page}
+              onChange={handlePageChange}
+              variant="outlined"
+              shape="rounded"
+            />
+          </Box>
+        )}
       </Container>
-    </Box >
+    </Box>
   );
 }
 
-export default Home
+export default Home;

@@ -157,7 +157,7 @@ function AnimePage() {
             <Typography component="h2" variant="h5">Votes</Typography>
             {anime.totalRatings ? (
               <BarChart
-                height={300}
+                height={400}
                 xAxis={[{
                   data: Object.keys(anime.ratingCounts),
                   label: 'Rating',
@@ -180,63 +180,32 @@ function AnimePage() {
       </Container>
 
 
-      {userRate ? (
-        <Backdrop
-          open={openRatingForm}
-        >
-          <Form onSubmit={reRateAnime}>
-            <Stack gap={4}>
-              <Typography component="h2" variant='h4'>
-                Rate
-              </Typography>
+      <Backdrop open={openRatingForm}>
+        <Form onSubmit={userRate ? reRateAnime : rateAnime} sx={{ padding: "1rem" }}>
+          <Stack gap={5}>
+            <Typography component="h2" variant='h4'>
+              {userRate ? "Re-rate" : "Rate"}
+            </Typography>
 
-              <Stack gap={2}>
-                <Rating
-                  name="rating"
-                  value={newRate}
-                  onChange={(e, newValue) => setNewRate(() => newValue)}
-                  min={1}
-                  max={10}
-                  precision={1}
-                  size="large"
-                />
-                <Stack gap={2} direction="row" variant="contained">
-                  <Button type='submit'>Rate</Button>
-                  <Button onClick={() => { setOpenRatingForm(close) }}>Close</Button>
-                </Stack>
+            <Stack gap={2}>
+              <Rating
+                name="rating"
+                value={newRate}
+                onChange={(e, newValue) => setNewRate(() => newValue)}
+                min={1}
+                max={10}
+                precision={1}
+                size="large"
+              />
+              <Stack gap={2} direction="row" variant="contained">
+                <Button type='submit'>{userRate ? "Re-rate" : "Rate"}</Button>
+                <Button onClick={() => setOpenRatingForm(false)}>Close</Button>
               </Stack>
             </Stack>
-          </Form>
-        </Backdrop>
-      ) : (
-        <Backdrop
-          open={openRatingForm}
-        >
-          <Form onSubmit={rateAnime} sx={{ padding: "1rem" }}>
-            <Stack gap={5}>
-              <Typography component="h2" variant='h4'>
-                Rate
-              </Typography>
+          </Stack>
+        </Form>
+      </Backdrop>
 
-              <Stack gap={2}>
-                <Rating
-                  name="rating"
-                  value={newRate}
-                  onChange={(e, newValue) => setNewRate(() => newValue)}
-                  min={1}
-                  max={10}
-                  precision={1}
-                  size="large"
-                />
-                <Stack gap={2} direction="row" variant="contained">
-                  <Button type='submit'>Rate</Button>
-                  <Button onClick={() => { setOpenRatingForm(close) }}>Close</Button>
-                </Stack>
-              </Stack>
-            </Stack>
-          </Form>
-        </Backdrop>
-      )}
 
     </Box >
   )
